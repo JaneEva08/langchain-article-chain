@@ -98,3 +98,14 @@ def test_prompts_ask_for_topic_language():
     build_analysis_chain(RunnableLambda(spy)).invoke({"topic": "x"})
     build_outline_chain(RunnableLambda(spy)).invoke({"analysis_json": "{}"})
     assert all("same language" in s for s in seen)
+
+
+def test_min_words_env_triggers_review(tmp_path: Path, monkeypatch):
+    """MIN_WORDS позволяет вызвать review-звено на нормальной статье (для демонстрации)."""
+    monkeypatch.setenv("MIN_WORDS", "1000")
+    calls = []
+    out = run_chain("Test topic", tmp_path, llm=fake_llm_factory(calls))
+    assert calls[-1] == "review"
+    steps = json.loads(out.with_suffix(".steps.json").read_text(encoding="utf-8"))
+    assert steps["review_issues"] == ["Article is too short (< 1000 words)"]
+    assert steps["review_fix_applied"] is False  # правка не уменьшила число замечаний, не принята

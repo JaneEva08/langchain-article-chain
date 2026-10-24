@@ -36,7 +36,8 @@ macOS / Linux: `source venv/bin/activate` и `cp .env.example .env`.
 получает транслитерированное имя и не затирает прошлые запуски.
 
 Настройки в `.env`: `OPENAI_API_KEY`, `OPENAI_BASE_URL` (любой OpenAI-совместимый сервис),
-`AI_MODEL`, `TEMPERATURE`, `LOG_LEVEL`.
+`AI_MODEL`, `TEMPERATURE`, `LOG_LEVEL`, `MIN_WORDS` (порог длины для локальной проверки, по умолчанию 150;
+если поставить больше, чем получается статья, сработает звено `review_chain`, это удобно для демонстрации).
 
 ## Тесты
 

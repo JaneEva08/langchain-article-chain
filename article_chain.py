@@ -145,8 +145,12 @@ def minimal_review(article: str, outline: Dict[str, Any]) -> List[str]:
         heading = section.get("heading", "") if isinstance(section, dict) else str(section)
         if heading and heading.lower() not in article.lower():
             issues.append(f"Missing section: {heading}")
-    if len(article.split()) < 150:
-        issues.append("Article is too short (< 150 words)")
+    try:
+        min_words = int(os.getenv("MIN_WORDS", "150"))
+    except ValueError:
+        min_words = 150
+    if len(article.split()) < min_words:
+        issues.append(f"Article is too short (< {min_words} words)")
     return issues
 
 
